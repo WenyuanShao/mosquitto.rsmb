@@ -144,7 +144,6 @@ void Protocol_timeslice()
 			goto exit;
 		}
 	}
-
 	MQTTProtocol_checkPendingWrites();
 	if (sock > 0)
 	{
@@ -176,8 +175,9 @@ void Protocol_timeslice()
 #endif
 				MQTTProtocol_timeslice(sock, client);
 #if defined(MQTTS)
-			else if (protocol == PROTOCOL_MQTTS)
+			else if (protocol == PROTOCOL_MQTTS) {
 			    MQTTSProtocol_timeslice(sock);
+			}
 		}
 #endif
 	}

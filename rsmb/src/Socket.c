@@ -446,6 +446,7 @@ int Socket_addServerSocket(Listener* list)
 	{
 		list->addr.sin_family = AF_INET;
 		list->addr.sin_port = htons(list->port);
+		list->addr.sin_addr.s_addr = inet_addr("10.10.1.2");
 		memset(list->addr.sin_zero, 0, sizeof(list->addr.sin_zero));
 		rc = bind(list->socket, (struct sockaddr *)&(list->addr), sizeof(list->addr));
 	}

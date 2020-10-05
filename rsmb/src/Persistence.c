@@ -362,17 +362,17 @@ char* getstring(char* str, char* delims, char** curpos)
 #else
 	void
 #endif
-Persistence_process_file(FILE* cfile, BrokerStates* bs, property* propsTable, int props_count)
+Persistence_process_file(FILE* cfile, BrokerStates* bs, property* propsTable, int props_count, int port)
 {
 	void* s = bs;
-	char curline[120], *curpos;
-	int line_no = 0;
+	//char curline[120], *curpos;
+	//int line_no = 0;
 #if !defined(SINGLE_LISTENER)
 	Listener* defaultListener = NULL;
 #endif
 
 	FUNC_ENTRY;
-	while (fgets(curline, sizeof(curline), cfile))
+	/*while (fgets(curline, sizeof(curline), cfile))
 	{
 		char *pword = strtok_r(curline, delims, &curpos);
 
@@ -451,30 +451,31 @@ Persistence_process_file(FILE* cfile, BrokerStates* bs, property* propsTable, in
 							defaultListener->ipv6 = (strcmp(val, "true") == 0);
 						}
 						else if (strcmp(pword, "listener") == 0)
-						{
+						{*/
 							/* listener port [address] [mqtt|mqtts] */
+							trace_settings.log_level = LOG_WARNING;
 							propsTable = listenerProps;
 							props_count = listener_props_count;
 							s = Socket_new_listener();
-							((Listener*)s)->port = atoi(val);
-							if ((val = strtok_r(NULL, delims, &curpos)))
-							{
-								((Listener*)s)->address = malloc(strlen(val)+1);
-								strcpy(((Listener*)s)->address, val);
-								if ((val = strtok_r(NULL, delims, &curpos)))
-								{
-									if (strcmp(val, "mqtt") == 0)
-										((Listener*)s)->protocol = PROTOCOL_MQTT;
+							((Listener*)s)->port = port;
+							//if ((val = strtok_r(NULL, delims, &curpos)))
+							//{
+							//	((Listener*)s)->address = malloc(strlen(val)+1);
+							//	strcpy(((Listener*)s)->address, val);
+							//	if ((val = strtok_r(NULL, delims, &curpos)))
+							//	{
+								//	if (strcmp(val, "mqtt") == 0)
+								//		((Listener*)s)->protocol = PROTOCOL_MQTT;
 #if defined(MQTTS)
-									else if (strcmp(val, "mqtts") == 0)
+								//	else if (strcmp(val, "mqtts") == 0)
 										((Listener*)s)->protocol = PROTOCOL_MQTTS;
 #endif
-									else
-										Log(LOG_WARNING, 152, NULL, val, line_no);
-								}
-							}
+								//	else
+								//		Log(LOG_WARNING, 152, NULL, val, line_no);
+							//	}
+							//}
 							ListAppend(bs->listeners, s, 0);
-						}
+						/*}
 						else
 #endif
 #if !defined(NO_BRIDGE)
@@ -505,7 +506,7 @@ Persistence_process_file(FILE* cfile, BrokerStates* bs, property* propsTable, in
 						}
 						else if (strcmp(pword, "topic") == 0)
 						{
-							/* List of topic structures: pattern, direction, localPrefix, remotePrefix, priority */
+							//List of topic structures: pattern, direction, localPrefix, remotePrefix, priority
 							int ok = 0;
 							BridgeTopics* t = malloc(sizeof(BridgeTopics));
 #if defined(MQTTS)
@@ -515,7 +516,7 @@ Persistence_process_file(FILE* cfile, BrokerStates* bs, property* propsTable, in
 							t->pattern = malloc(strlen(val)+1);
 							strcpy(t->pattern, val);
 							ok = 1;
-							t->direction = 2; /* default - out */
+							t->direction = 2; // default - out
 							t->priority = PRIORITY_NORMAL;
 							if ((val = getstring(NULL, delims, &curpos)))
 							{
@@ -570,7 +571,7 @@ Persistence_process_file(FILE* cfile, BrokerStates* bs, property* propsTable, in
 						}
 						else if (strcmp(pword, "advertise") == 0)
 						{
-							/* advertise address interval gateway_id */
+							// advertise address interval gateway_id 
 							advertise_parms* adv = malloc(sizeof(advertise_parms));
 							memset(adv, '\0', sizeof(advertise_parms));
 							adv->address = malloc(strlen(val) + 1);
@@ -594,7 +595,7 @@ Persistence_process_file(FILE* cfile, BrokerStates* bs, property* propsTable, in
 							Log(LOG_CONFIG, 5, NULL, pword, val);
 						}
 						else if (propsTable[i].type == PROPERTY_BOOLEAN)
-						{ /* boolean */
+						{ // boolean
 							int ival = -1;
 							if (strcmp(val, "true") == 0)
 								ival = 1;
@@ -611,7 +612,7 @@ Persistence_process_file(FILE* cfile, BrokerStates* bs, property* propsTable, in
 						else if (propsTable[i].type == PROPERTY_STRING_LIST)
 						{
 							List** list = (List**)&((char*)s)[propsTable[i].location];
-							/* list of strings */
+							// list of strings
 							while (val)
 							{
 								int len = strlen(val)+1;
@@ -626,7 +627,7 @@ Persistence_process_file(FILE* cfile, BrokerStates* bs, property* propsTable, in
 #if !defined(NO_ADMIN_COMMANDS)
 						else if (propsTable[i].type == PROPERTY_FUNCTION)
 						{
-							/* call the function pointed to in the table */
+							// call the function pointed to in the table
 							(*functions[propsTable[i].location])(val);
 						}
 #endif
@@ -638,16 +639,16 @@ Persistence_process_file(FILE* cfile, BrokerStates* bs, property* propsTable, in
 						}
 					}
 					break;
-				} /* if */
-			} /* for */
+				} // if
+			} // for
 			if (!found)
 				Log(LOG_WARNING, 8, NULL, pword, line_no);
-		} /* if */
-	} /* while */
-
-#if !defined(NO_BRIDGE)
-	exit:;
-#endif
+		} // if
+	} // while
+*/
+//#if !defined(NO_BRIDGE)
+//	exit:;
+//#endif
 	FUNC_EXIT;
 #if !defined(SINGLE_LISTENER)
 	return defaultListener;
@@ -662,7 +663,7 @@ Persistence_process_file(FILE* cfile, BrokerStates* bs, property* propsTable, in
  * @param config_set has a config file been named at startup?
  * @return success indicator - success == 1
  */
-int Persistence_read_config(char* filename, BrokerStates* bs, int config_set)
+int Persistence_read_config(char* filename, BrokerStates* bs, int config_set, int port)
 {
 	int rc = 0;
 	FILE* cfile = NULL;
@@ -689,7 +690,7 @@ int Persistence_read_config(char* filename, BrokerStates* bs, int config_set)
 #if !defined(SINGLE_LISTENER)
 		defaultListener =
 #endif
-		Persistence_process_file(cfile, bs, brokerProps, broker_props_count);
+		Persistence_process_file(cfile, bs, brokerProps, broker_props_count, port);
 		fclose(cfile);
 #if !defined(SINGLE_LISTENER)
 		if (defaultListener != NULL)
@@ -1251,7 +1252,8 @@ int Persistence_read_admin(char* filename, BrokerStates* bs)
 	FUNC_ENTRY;
 	if ((cfile = fopen(filename, "r")) != NULL)
 	{
-		Persistence_process_file(cfile, bs, commandProps, command_props_count);
+		printf("ERROR\n");
+		Persistence_process_file(cfile, bs, commandProps, command_props_count, 0);
 		fclose(cfile);
 		success = 1;
 	}

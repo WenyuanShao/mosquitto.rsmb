@@ -21,7 +21,7 @@
 #include "Broker.h"
 #include <stdio.h>
 
-int Persistence_read_config(char* filename, BrokerStates* s, int config_set);
+int Persistence_read_config(char* filename, BrokerStates* s, int config_set, int port);
 void Persistence_free_config(BrokerStates* bs);
 
 FILE* Persistence_open_retained(char mode);

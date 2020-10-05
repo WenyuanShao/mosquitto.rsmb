@@ -126,6 +126,7 @@ static BrokerStates BrokerState =
 char* config = "broker.cfg";	/**< default broker configuration file name */
 int config_set = 0;				/**< has the broker config file name been set at startup? */
 int segv_flag = 0;				/**< has a segfault occurred? */
+int cport = 0;
 
 #include "StackTrace.h"
 
@@ -215,6 +216,10 @@ void getopts(int argc, char** argv)
 	{
 		if (strcmp(argv[count], "--daemon") == 0)
 			trace_settings.isdaemon = 1;
+		else if (strcmp(argv[count], "--cport") == 0) {
+			cport = atoi(argv[++count]);
+			printf("cport: %d\n", cport);
+		}
 		else
 		{
 			config = argv[count];
@@ -264,6 +269,7 @@ int main(int argc, char* argv[])
 	Log(LOG_INFO, 9998, "Part of Project Mosquitto in Eclipse\n("
                       "http://projects.eclipse.org/projects/technology.mosquitto)");
 	getopts(argc, argv);
+	printf("####cport: %d\n", cport);
 
 	if (Messages_initialize(&BrokerState) != 0)
 		goto no_messages;
@@ -339,7 +345,7 @@ int Broker_startup()
 	BrokerState.listeners = ListInitialize();
 #endif
 	Users_initialize(&BrokerState);
-	if ((rc = Persistence_read_config(config, &BrokerState, config_set)) == 0)
+	if ((rc = Persistence_read_config(config, &BrokerState, config_set, cport)) == 0)
 	{
 		BrokerState.se = SubscriptionEngines_initialize();
 		rc = Protocol_initialize(&BrokerState);

@@ -685,6 +685,7 @@ int MQTTSProtocol_handlePubacks(void* pack, int sock, char* clientAddr, Clients*
 			ListRemove(client->outboundMsgs, m);
 			/* TODO: msgs counts */
 			/* (++state.msgs_sent);*/
+			MQTTProtocol_processQueued(client);
 		}
 	}
 	MQTTSPacket_free_packet(pack);
