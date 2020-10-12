@@ -26,24 +26,25 @@ ifndef CC
   CC = gcc
 endif
 
-TARGETS = broker broker_dbg broker_mqtts rsmb.ini
+#TARGETS = broker broker_dbg broker_mqtts rsmb.ini
+TARGETS = broker_mqtts
 
 all: $(TARGETS)
 
-broker: *.c *.h 
-	$(CC) -Wall -Os *.c -o broker
+#broker: *.c *.h 
+#	$(CC) -Wall -Os *.c -o broker
 
-broker_dbg: *.c *.h
-	$(CC) -Wall -ggdb *.c -o broker_dbg
+#broker_dbg: *.c *.h
+#	$(CC) -Wall -ggdb *.c -o broker_dbg
 
 broker_mqtts: *.c *.h
 	$(CC) -DMQTTS -Wall -Os *.c -o broker_mqtts
 	
-broker_mqtts32: *.c *.h
-	$(CC) -m32 -DMQTTS -Wall -Os *.c -o broker_mqtts32
+#broker_mqtts32: *.c *.h
+#	$(CC) -m32 -DMQTTS -Wall -Os *.c -o broker_mqtts32
 
-rsmb.ini: *.h
-	perl tools/be/be.pl
+#rsmb.ini: *.h
+#	perl tools/be/be.pl
 
 clean:
 	rm -f $(TARGETS)

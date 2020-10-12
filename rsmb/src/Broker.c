@@ -218,12 +218,12 @@ void getopts(int argc, char** argv)
 			trace_settings.isdaemon = 1;
 		else if (strcmp(argv[count], "--cport") == 0) {
 			cport = atoi(argv[++count]);
-			printf("cport: %d\n", cport);
+			//printf("cport: %d\n", cport);
 		}
 		else
 		{
 			config = argv[count];
-			Log(LOG_INFO, 49, "Configuration file name is %s", config);
+			//Log(LOG_INFO, 49, "Configuration file name is %s", config);
 			config_set = 1;
 		}
 		count++;
@@ -265,18 +265,17 @@ int main(int argc, char* argv[])
 	Heap_initialize();
 	Log_initialize();
 
-	Log(LOG_INFO, 9999, PRODUCT_NAME);
-	Log(LOG_INFO, 9998, "Part of Project Mosquitto in Eclipse\n("
-                      "http://projects.eclipse.org/projects/technology.mosquitto)");
+	//Log(LOG_INFO, 9999, PRODUCT_NAME);
+	//Log(LOG_INFO, 9998, "Part of Project Mosquitto in Eclipse\n("
+    //                  "http://projects.eclipse.org/projects/technology.mosquitto)");
 	getopts(argc, argv);
-	printf("####cport: %d\n", cport);
 
 	if (Messages_initialize(&BrokerState) != 0)
 		goto no_messages;
 
-	Log(LOG_INFO, 53, "Version %s, %s", BrokerState.version, BrokerState.timestamp);
-	Log(LOG_INFO, 54, "Features included: %s", features);
-	Log(LOG_INFO, 9993, "Authors: Ian Craggs (icraggs@uk.ibm.com), Nicholas O'Leary");
+	//Log(LOG_INFO, 53, "Version %s, %s", BrokerState.version, BrokerState.timestamp);
+	//Log(LOG_INFO, 54, "Features included: %s", features);
+	//Log(LOG_INFO, 9993, "Authors: Ian Craggs (icraggs@uk.ibm.com), Nicholas O'Leary");
 
 	if ((rc = Broker_startup()) == 0)
 	{
